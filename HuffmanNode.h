@@ -8,12 +8,16 @@
 
 #include <string>
 
-class HuffmanNode {
+namespace SCRSHA001{
+    class HuffmanNode {
     private:
         char letter;
         int frequency;
+    public:
+        HuffmanNode(char lett,int freq);
+    };
+}
 
-};
 
 
 #endif //ASSIGNMENT_3_SCRSHA001_HUFFMANNODE_H

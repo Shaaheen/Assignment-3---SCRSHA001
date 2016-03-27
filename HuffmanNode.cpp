@@ -3,3 +3,11 @@
 //
 
 #include "HuffmanNode.h"
+
+namespace SCRSHA001{
+    HuffmanNode::HuffmanNode(char lett, int freq) {
+        this->letter = lett;
+        this->frequency = freq;
+
+    }
+}
