@@ -2,9 +2,6 @@
 // Created by Shaaheen on 3/27/2016.
 //
 
-#include <vector>
-#include <unordered_map>
-#include <iostream>
 #include <queue>
 #include "HuffmanTree.h"
 #include "catch.hpp"
@@ -21,7 +18,7 @@ namespace SCRSHA001{
 
     }
 
-    bool compare(const HuffmanNode& a,const HuffmanNode& b){
+    bool compare(HuffmanNode a,HuffmanNode b){
         return (a < b) ;
     }
 //    bool HuffmanTree::compare(const HuffmanNode &a, const HuffmanNode &b) {
@@ -30,13 +27,16 @@ namespace SCRSHA001{
 
     HuffmanTree::HuffmanTree(std::string toEncode) {
 
-        unordered_map<char,int> letterFrequencyTable = createLetterFrequencyTable(toEncode);
-        priority_queue< HuffmanNode,vector<HuffmanNode>,function<bool(HuffmanNode,HuffmanNode)> > priorityQueueOfNodes(compare);
+        unordered_map<char,int> letterFrequencyTable = createLetterFrequencyTable(toEncode); //Get frequency table
+
+        //Priority prioritising the smallest frequency nodes first
+        priority_queue<HuffmanNode,vector<HuffmanNode>,HuffmanComparator> priorityQueueOfNodes;
+
+
+
 
 
     }
-
-
 
     unordered_map<char, int> HuffmanTree::createLetterFrequencyTable(const string &toEncode) const {
 

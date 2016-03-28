@@ -11,14 +11,11 @@
 #include <queue>
 
 using namespace std;
-
-bool compare(const SCRSHA001::HuffmanNode& a,const SCRSHA001::HuffmanNode & b){
-    return (a < b) ;
-}
+using namespace SCRSHA001;
 
 TEST_CASE("Huffman tree building and destroying","[HuffmanTree]"){
 
-    SCRSHA001::HuffmanTree huffmanTree = SCRSHA001::HuffmanTree();
+    HuffmanTree huffmanTree = HuffmanTree();
 
     SECTION("Testing letter frequency table"){
         string textFileTestCase = "Hello Worldzies hit the hammer heavy xxxxxxx";
@@ -43,19 +40,24 @@ TEST_CASE("Huffman tree building and destroying","[HuffmanTree]"){
     }
 
     SECTION("Test Huffman node < operator"){
-        SCRSHA001::HuffmanNode bigger = SCRSHA001::HuffmanNode('c',15);
-        SCRSHA001::HuffmanNode smaller = SCRSHA001::HuffmanNode('c',3);
+        HuffmanNode bigger = HuffmanNode('c',15);
+        HuffmanNode smaller = HuffmanNode('c',3);
 
         REQUIRE( (bigger < smaller) == false );
         REQUIRE( (smaller < bigger) == true );
     }
 
     SECTION("Test priority queue of Huffman Nodes"){
-        priority_queue< SCRSHA001::HuffmanNode,vector<SCRSHA001::HuffmanNode>,function<bool(const SCRSHA001::HuffmanNode,const SCRSHA001::HuffmanNode)> > priorityQueueTest(compare);
-        priorityQueueTest.push(SCRSHA001::HuffmanNode('x',1));
-        priorityQueueTest.push(SCRSHA001::HuffmanNode('a',5));
-        SCRSHA001::HuffmanNode topOfQueue = priorityQueueTest.top();
-        REQUIRE( topOfQueue.getFrequencey() == 1);
+        priority_queue<HuffmanNode,vector<HuffmanNode>,HuffmanComparator> priorityQueueTest;
+
+        priorityQueueTest.push(HuffmanNode('x',1));
+        priorityQueueTest.push(HuffmanNode('a',5));
+        priorityQueueTest.push(HuffmanNode('h',2));
+        priorityQueueTest.push(HuffmanNode('q',15));
+        priorityQueueTest.push(HuffmanNode('y',4));
+
+        HuffmanNode topOfQueue = priorityQueueTest.top();
+        REQUIRE( topOfQueue.getFrequency() == 1);
 
     }
 

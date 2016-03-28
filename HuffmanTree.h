@@ -20,8 +20,16 @@ namespace SCRSHA001{
             HuffmanTree(std::string toEncode);
             ~HuffmanTree();
             std::unordered_map<char, int> createLetterFrequencyTable(const std::string &toEncode) const;
-            bool compare(const HuffmanNode& a,const HuffmanNode& b);
 
+    };
+
+    //For the priority queue - Organising the smallest first
+    struct HuffmanComparator
+    {
+        bool operator()(const HuffmanNode & a,const HuffmanNode & b) const
+        {
+            return !(a < b);
+        }
     };
 }
 
