@@ -78,21 +78,32 @@ TEST_CASE("Huffman tree building and destroying","[HuffmanTree]"){
     SECTION("Building the tree"){
         priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>,HuffmanComparator> priorityQueueTest;
 
-                                                                                //  32----|
+                                                                                //  33----|
         priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('x',7)));//   |    17  ------ 10
-        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('a',5)));//   |     |      |     |
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('a',6)));//   |     |      |     |
         priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('h',1)));//   |     |     |      5
         priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('q',15)));//  |     |    |     |    |
-        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('y',4)));  //15q   7x   5a   4y    1h
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('y',4)));  //15q   7x   6a   4y    1h
 
         shared_ptr<HuffmanNode> testRootNode = huffmanTree.buildTree(priorityQueueTest);
-        REQUIRE((*testRootNode).getFrequency() == 32 ); //root should be the Total of all frequencies
+        REQUIRE((*testRootNode).getFrequency() == 33 ); //root should be the Total of all frequencies
 
         REQUIRE(testRootNode.use_count() ==2);//should only have to ref counts- in this test and in the priority queue
         //should only have reference pointer from the parent to left child -
         // Important as this ensures that if root is deleted then the rest of tree deleted
         REQUIRE(testRootNode->left.use_count() == 1);
         REQUIRE(testRootNode->right.use_count() == 1);
+
+        SECTION("Test creating the Code Table"){
+            cout<<"Test here"<<endl;
+            huffmanTree.buildCodeTableFromTree(testRootNode,"");
+            REQUIRE(huffmanTree.getCodeForLetter('q') == "0");
+            REQUIRE(huffmanTree.getCodeForLetter('x') == "10");
+            REQUIRE(huffmanTree.getCodeForLetter('h') == "1100");
+            REQUIRE(huffmanTree.getCodeForLetter('y') == "1101");
+            REQUIRE(huffmanTree.getCodeForLetter('a') == "111");
+
+        }
     }
 
 }

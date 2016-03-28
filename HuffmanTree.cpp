@@ -31,16 +31,18 @@ namespace SCRSHA001{
         }
 
         this->rootNode = buildTree(priorityQueueOfNodes); //Set root node to root of built Huffman Tree
+        buildCodeTableFromTree(rootNode,""); //Sets the code table for tree
 
     }
 
+    //Traverses tree and adds appropriate bitstring character
     void HuffmanTree::buildCodeTableFromTree(std::shared_ptr<HuffmanNode> rootNode,string bitString) {
         if (rootNode->left != nullptr){
-            buildCodeTableFromTree(rootNode->left,bitString + "0");
+            buildCodeTableFromTree(rootNode->left,bitString + "0"); //If traverse left - add 0 to bitstring
         }
-        this->codeTable.insert({(*rootNode).getLetter(),bitString});
+        this->codeTable.insert({(*rootNode).getLetter(),bitString}); //Set the code table with bitstring and associated letter
         if (rootNode->right != nullptr){
-            buildCodeTableFromTree(rootNode->right,bitString + "1");
+            buildCodeTableFromTree(rootNode->right,bitString + "1"); //If traverse right - add 1 to bitstring
         }
     }
 
@@ -66,7 +68,7 @@ namespace SCRSHA001{
             priorityQueue.push(newParentNode); //Push new parent node onto priority queue to be possibly merged again
         }
 
-        return newParentNode;
+        return newParentNode; //return the last edited node - root node
     }
 
     unordered_map<char, int> HuffmanTree::createLetterFrequencyTable(const string &toEncode) const {
@@ -86,10 +88,10 @@ namespace SCRSHA001{
             }
         }
 
-        return lettersFound;
+        return lettersFound; //return the finished freq table
     }
 
-
+    //Function to return the bitstring code for a specified letter
     std::string HuffmanTree::getCodeForLetter(char letter) {
         return codeTable.at(letter);
     }
