@@ -58,8 +58,23 @@ TEST_CASE("Huffman tree building and destroying","[HuffmanTree]"){
         priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('y',4)));
 
         shared_ptr<HuffmanNode> topOfQueue = priorityQueueTest.top();
+
         REQUIRE( (*topOfQueue).getFrequency() == 1);
 
+    }
+
+    SECTION("Building the tree"){
+        priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>,HuffmanComparator> priorityQueueTest;
+
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('x',7)));
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('a',5)));
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('h',1)));
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('q',15)));
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('y',4)));
+
+        HuffmanNode testNode = *huffmanTree.buildTree(priorityQueueTest);
+        cout<<"Left Node outside: "<<(testNode.left).use_count()<<endl;
+        REQUIRE(testNode.getFrequency() == 5);
     }
 
 }

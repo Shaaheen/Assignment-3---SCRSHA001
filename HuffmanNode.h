@@ -7,6 +7,7 @@
 
 
 #include <string>
+#include <memory>
 
 namespace SCRSHA001{
     class HuffmanNode {
@@ -14,6 +15,8 @@ namespace SCRSHA001{
         char letter;
         int frequency;
     public:
+        std::shared_ptr<HuffmanNode> left;
+        std::shared_ptr<HuffmanNode> right;
         HuffmanNode(char lett,int freq);
         bool operator<(const HuffmanNode &rhs)const;
         int getFrequency() const;

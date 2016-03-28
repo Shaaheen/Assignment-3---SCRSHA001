@@ -22,7 +22,6 @@ namespace SCRSHA001{
 
         unordered_map<char,int> letterFrequencyTable = createLetterFrequencyTable(toEncode); //Get frequency table
 
-
         //Priority prioritising the smallest frequency nodes first
         priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>,HuffmanComparator> priorityQueueOfNodes;
 
@@ -31,7 +30,26 @@ namespace SCRSHA001{
             priorityQueueOfNodes.push(shared_ptr<HuffmanNode>(new HuffmanNode(iterator->first,iterator->second)));
         }
 
+        buildTree(priorityQueueOfNodes);
 
+    }
+    std::shared_ptr<SCRSHA001::HuffmanNode> HuffmanTree::buildTree(priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>,HuffmanComparator> &priorityQueue)
+    {
+        shared_ptr<HuffmanNode> leftOfNewParent = priorityQueue.top();
+        cout<<"Left Node: "<<leftOfNewParent.use_count()<<endl;
+        priorityQueue.pop();
+        cout<<"Left Node: "<<leftOfNewParent.use_count()<<endl;
+        shared_ptr<HuffmanNode> rightOfNewParent = priorityQueue.top();
+        priorityQueue.pop();
+        int parentFrequency = (*leftOfNewParent).getFrequency() + (*rightOfNewParent).getFrequency();
+
+        shared_ptr<HuffmanNode> newParentNode(new HuffmanNode('_',parentFrequency));
+        newParentNode->left = leftOfNewParent;
+        newParentNode->right = rightOfNewParent;
+        cout<<"Left Node last: "<<leftOfNewParent.use_count()<<endl;
+        priorityQueue.push(newParentNode);
+        cout<<"Left Node after push: "<<leftOfNewParent.use_count()<<endl;
+        return newParentNode;
     }
 
     unordered_map<char, int> HuffmanTree::createLetterFrequencyTable(const string &toEncode) const {
