@@ -10,19 +10,15 @@ using namespace std;
 
 namespace SCRSHA001{
 
-    HuffmanTree::HuffmanTree() {
+    HuffmanTree::HuffmanTree() { }
 
-    }
-
-    HuffmanTree::~HuffmanTree() {
-
-    }
+    HuffmanTree::~HuffmanTree() { }
 
     HuffmanTree::HuffmanTree(std::string toEncode) {
 
         unordered_map<char,int> letterFrequencyTable = createLetterFrequencyTable(toEncode); //Get frequency table
 
-        //Priority prioritising the smallest frequency nodes first
+        //Priority queue prioritising the smallest frequency nodes first
         priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>,HuffmanComparator> priorityQueueOfNodes;
 
         //Add all letters with associated frequencies into priority queue in preparation to be attached to tree
@@ -32,6 +28,10 @@ namespace SCRSHA001{
 
         this->rootNode = buildTree(priorityQueueOfNodes); //Set root node to root of built Huffman Tree
         buildCodeTableFromTree(rootNode,""); //Sets the code table for tree
+
+        string compressedString = compressStringWithHuffman(toEncode);
+        char * bytesFromCompressed = (char *) compressedString.c_str();
+
 
     }
 
@@ -94,5 +94,15 @@ namespace SCRSHA001{
     //Function to return the bitstring code for a specified letter
     std::string HuffmanTree::getCodeForLetter(char letter) {
         return codeTable.at(letter);
+    }
+
+    //Function to use the code table to match up the letters in a string and change them to the code table equivalent
+    std::string HuffmanTree::compressStringWithHuffman(std::string toEncode) {
+        char * lettersInTextFile = (char *) toEncode.c_str(); //Split into letter array
+        string compressedString = "";
+        for (int i = 0; i < toEncode.length(); ++i) {
+            compressedString = compressedString + codeTable.at(lettersInTextFile[i]); //Add code value of that letter
+        }
+        return compressedString; //return full coded string
     }
 }

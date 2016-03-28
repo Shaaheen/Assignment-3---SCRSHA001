@@ -10,9 +10,6 @@ namespace SCRSHA001{
         this->frequency = freq;
     }
 
-//    bool operator<(HuffmanNode &rhs){
-//        return (this->frequency < rhs.frequency);
-//    }
     bool HuffmanNode::operator<(const HuffmanNode &rhs)const {
         return (this->frequency < rhs.getFrequency());
     }

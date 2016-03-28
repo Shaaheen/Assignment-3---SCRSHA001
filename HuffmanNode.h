@@ -17,7 +17,9 @@ namespace SCRSHA001{
     public:
         std::shared_ptr<HuffmanNode> left = nullptr;
         std::shared_ptr<HuffmanNode> right = nullptr;
+
         HuffmanNode(char lett,int freq);
+
         bool operator<(const HuffmanNode &rhs)const;
         int getFrequency() const;
         char getLetter() const;

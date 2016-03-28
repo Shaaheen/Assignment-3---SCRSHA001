@@ -38,6 +38,8 @@ namespace SCRSHA001{
             void buildCodeTableFromTree(std::shared_ptr<HuffmanNode> rootNode,std::string bitString);
 
             std::string getCodeForLetter(char letter);
+
+            std::string compressStringWithHuffman(std::string toEncode);
     };
 
 

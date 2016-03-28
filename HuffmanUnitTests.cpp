@@ -95,14 +95,19 @@ TEST_CASE("Huffman tree building and destroying","[HuffmanTree]"){
         REQUIRE(testRootNode->right.use_count() == 1);
 
         SECTION("Test creating the Code Table"){
-            cout<<"Test here"<<endl;
             huffmanTree.buildCodeTableFromTree(testRootNode,"");
+
             REQUIRE(huffmanTree.getCodeForLetter('q') == "0");
             REQUIRE(huffmanTree.getCodeForLetter('x') == "10");
             REQUIRE(huffmanTree.getCodeForLetter('h') == "1100");
             REQUIRE(huffmanTree.getCodeForLetter('y') == "1101");
             REQUIRE(huffmanTree.getCodeForLetter('a') == "111");
 
+        }
+        SECTION("Test the compress method"){
+            huffmanTree.buildCodeTableFromTree(testRootNode,"");
+            string compressedString = huffmanTree.compressStringWithHuffman("qxhyxxxhy"); //only letters from prev test
+            REQUIRE(compressedString == "0101100110110101011001101");
         }
     }
 
