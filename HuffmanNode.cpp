@@ -20,4 +20,8 @@ namespace SCRSHA001{
     int HuffmanNode::getFrequency() const{
         return frequency;
     }
+
+    char HuffmanNode::getLetter() const {
+        return letter;
+    }
 }

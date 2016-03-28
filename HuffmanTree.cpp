@@ -30,7 +30,18 @@ namespace SCRSHA001{
             priorityQueueOfNodes.push(shared_ptr<HuffmanNode>(new HuffmanNode(iterator->first,iterator->second)));
         }
 
+        this->rootNode = buildTree(priorityQueueOfNodes); //Set root node to root of built Huffman Tree
 
+    }
+
+    void HuffmanTree::buildCodeTableFromTree(std::shared_ptr<HuffmanNode> rootNode,string bitString) {
+        if (rootNode->left != nullptr){
+            buildCodeTableFromTree(rootNode->left,bitString + "0");
+        }
+        this->codeTable.insert({(*rootNode).getLetter(),bitString});
+        if (rootNode->right != nullptr){
+            buildCodeTableFromTree(rootNode->right,bitString + "1");
+        }
     }
 
 
@@ -79,5 +90,7 @@ namespace SCRSHA001{
     }
 
 
-
+    std::string HuffmanTree::getCodeForLetter(char letter) {
+        return codeTable.at(letter);
+    }
 }

@@ -24,6 +24,7 @@ namespace SCRSHA001{
     class HuffmanTree {
         private:
             std::shared_ptr<HuffmanNode> rootNode;
+            std::unordered_map<char,std::string> codeTable;
 
         public:
             HuffmanTree();
@@ -33,6 +34,10 @@ namespace SCRSHA001{
 
             std::shared_ptr<HuffmanNode> buildTree(
                 std::priority_queue<std::shared_ptr<HuffmanNode>, std::vector<std::shared_ptr<HuffmanNode>>, HuffmanComparator>& priorityQueue);
+
+            void buildCodeTableFromTree(std::shared_ptr<HuffmanNode> rootNode,std::string bitString);
+
+            std::string getCodeForLetter(char letter);
     };
 
 
