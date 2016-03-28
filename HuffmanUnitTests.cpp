@@ -61,20 +61,38 @@ TEST_CASE("Huffman tree building and destroying","[HuffmanTree]"){
 
         REQUIRE( (*topOfQueue).getFrequency() == 1);
 
+        priorityQueueTest.pop();
+        REQUIRE((*priorityQueueTest.top()).getFrequency() == 4);
+
+        priorityQueueTest.pop();
+        REQUIRE((*priorityQueueTest.top()).getFrequency() == 5);
+
+        priorityQueueTest.pop();
+        REQUIRE((*priorityQueueTest.top()).getFrequency() == 7);
+
+        priorityQueueTest.pop();
+        REQUIRE((*priorityQueueTest.top()).getFrequency() == 15);
+
     }
 
     SECTION("Building the tree"){
         priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>,HuffmanComparator> priorityQueueTest;
 
-        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('x',7)));
-        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('a',5)));
-        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('h',1)));
-        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('q',15)));
-        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('y',4)));
+                                                                                //  32----|
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('x',7)));//   |    17  ------ 10
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('a',5)));//   |     |      |     |
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('h',1)));//   |     |     |      5
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('q',15)));//  |     |    |     |    |
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('y',4)));  //15q   7x   5a   4y    1h
 
-        HuffmanNode testNode = *huffmanTree.buildTree(priorityQueueTest);
-        cout<<"Left Node outside: "<<(testNode.left).use_count()<<endl;
-        REQUIRE(testNode.getFrequency() == 5);
+        shared_ptr<HuffmanNode> testRootNode = huffmanTree.buildTree(priorityQueueTest);
+        REQUIRE((*testRootNode).getFrequency() == 32 ); //root should be the Total of all frequencies
+
+        REQUIRE(testRootNode.use_count() ==2);//should only have to ref counts- in this test and in the priority queue
+        //should only have reference pointer from the parent to left child -
+        // Important as this ensures that if root is deleted then the rest of tree deleted
+        REQUIRE(testRootNode->left.use_count() == 1);
+        REQUIRE(testRootNode->right.use_count() == 1);
     }
 
 }

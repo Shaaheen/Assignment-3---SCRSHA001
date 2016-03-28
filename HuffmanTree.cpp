@@ -30,25 +30,31 @@ namespace SCRSHA001{
             priorityQueueOfNodes.push(shared_ptr<HuffmanNode>(new HuffmanNode(iterator->first,iterator->second)));
         }
 
-        buildTree(priorityQueueOfNodes);
 
     }
-    std::shared_ptr<SCRSHA001::HuffmanNode> HuffmanTree::buildTree(priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>,HuffmanComparator> &priorityQueue)
-    {
-        shared_ptr<HuffmanNode> leftOfNewParent = priorityQueue.top();
-        cout<<"Left Node: "<<leftOfNewParent.use_count()<<endl;
-        priorityQueue.pop();
-        cout<<"Left Node: "<<leftOfNewParent.use_count()<<endl;
-        shared_ptr<HuffmanNode> rightOfNewParent = priorityQueue.top();
-        priorityQueue.pop();
-        int parentFrequency = (*leftOfNewParent).getFrequency() + (*rightOfNewParent).getFrequency();
 
-        shared_ptr<HuffmanNode> newParentNode(new HuffmanNode('_',parentFrequency));
-        newParentNode->left = leftOfNewParent;
-        newParentNode->right = rightOfNewParent;
-        cout<<"Left Node last: "<<leftOfNewParent.use_count()<<endl;
-        priorityQueue.push(newParentNode);
-        cout<<"Left Node after push: "<<leftOfNewParent.use_count()<<endl;
+
+    shared_ptr<HuffmanNode> HuffmanTree::buildTree(priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>,HuffmanComparator> &priorityQueue)
+    {
+        shared_ptr<HuffmanNode> newParentNode = nullptr;
+        //Loops until all nodes linked together and all thats left is the root node
+        while (priorityQueue.size() > 1){
+
+            //Get the smallest frequency letter as a Huffman Node - this will be the left node of the new parent
+            shared_ptr<HuffmanNode> leftOfNewParent = priorityQueue.top();
+            priorityQueue.pop();
+            //Get the second smallest frequency letter - right side of parent
+            shared_ptr<HuffmanNode> rightOfNewParent = priorityQueue.top();
+            priorityQueue.pop();
+            //Frequency of parent is the summation of the frequency of its children
+            int parentFrequency = (*leftOfNewParent).getFrequency() + (*rightOfNewParent).getFrequency();
+
+            newParentNode.reset(new HuffmanNode('_',parentFrequency)); //Empty char and summed frequency
+            newParentNode->left = leftOfNewParent; //Set pointers from parent to the children nodes so they don't get lost(out of scope)
+            newParentNode->right = rightOfNewParent;
+            priorityQueue.push(newParentNode); //Push new parent node onto priority queue to be possibly merged again
+        }
+
         return newParentNode;
     }
 
