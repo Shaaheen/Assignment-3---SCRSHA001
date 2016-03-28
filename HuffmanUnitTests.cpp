@@ -9,6 +9,7 @@
 #include "HuffmanNode.h"
 #include <unordered_map>
 #include <queue>
+#include <memory>
 
 using namespace std;
 using namespace SCRSHA001;
@@ -48,16 +49,16 @@ TEST_CASE("Huffman tree building and destroying","[HuffmanTree]"){
     }
 
     SECTION("Test priority queue of Huffman Nodes"){
-        priority_queue<HuffmanNode,vector<HuffmanNode>,HuffmanComparator> priorityQueueTest;
+        priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>,HuffmanComparator> priorityQueueTest;
 
-        priorityQueueTest.push(HuffmanNode('x',1));
-        priorityQueueTest.push(HuffmanNode('a',5));
-        priorityQueueTest.push(HuffmanNode('h',2));
-        priorityQueueTest.push(HuffmanNode('q',15));
-        priorityQueueTest.push(HuffmanNode('y',4));
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('x',7)));
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('a',5)));
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('h',1)));
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('q',15)));
+        priorityQueueTest.push(shared_ptr<HuffmanNode>(new HuffmanNode('y',4)));
 
-        HuffmanNode topOfQueue = priorityQueueTest.top();
-        REQUIRE( topOfQueue.getFrequency() == 1);
+        shared_ptr<HuffmanNode> topOfQueue = priorityQueueTest.top();
+        REQUIRE( (*topOfQueue).getFrequency() == 1);
 
     }
 

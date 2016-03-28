@@ -26,9 +26,9 @@ namespace SCRSHA001{
     //For the priority queue - Organising the smallest first
     struct HuffmanComparator
     {
-        bool operator()(const HuffmanNode & a,const HuffmanNode & b) const
+        bool operator()(const std::shared_ptr<HuffmanNode> & a,const std::shared_ptr<HuffmanNode> & b) const
         {
-            return !(a < b);
+            return !((*a) < (*b));
         }
     };
 }

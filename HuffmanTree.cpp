@@ -18,22 +18,18 @@ namespace SCRSHA001{
 
     }
 
-    bool compare(HuffmanNode a,HuffmanNode b){
-        return (a < b) ;
-    }
-//    bool HuffmanTree::compare(const HuffmanNode &a, const HuffmanNode &b) {
-//        return (a < b) ;
-//    }
-
     HuffmanTree::HuffmanTree(std::string toEncode) {
 
         unordered_map<char,int> letterFrequencyTable = createLetterFrequencyTable(toEncode); //Get frequency table
 
+
         //Priority prioritising the smallest frequency nodes first
-        priority_queue<HuffmanNode,vector<HuffmanNode>,HuffmanComparator> priorityQueueOfNodes;
+        priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>,HuffmanComparator> priorityQueueOfNodes;
 
-
-
+        //Add all letters with associated frequencies into priority queue in preparation to be attached to tree
+        for (unordered_map<char, int>::iterator iterator = letterFrequencyTable.begin(); iterator != letterFrequencyTable.end(); ++iterator) {
+            priorityQueueOfNodes.push(shared_ptr<HuffmanNode>(new HuffmanNode(iterator->first,iterator->second)));
+        }
 
 
     }
