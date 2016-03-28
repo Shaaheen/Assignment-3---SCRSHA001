@@ -30,7 +30,7 @@ namespace SCRSHA001{
             HuffmanTree();
             HuffmanTree(std::string toEncode);
             ~HuffmanTree();
-            std::unordered_map<char, int> createLetterFrequencyTable(const std::string &toEncode) const;
+
 
             std::shared_ptr<HuffmanNode> buildTree(
                 std::priority_queue<std::shared_ptr<HuffmanNode>, std::vector<std::shared_ptr<HuffmanNode>>, HuffmanComparator>& priorityQueue);
@@ -41,9 +41,6 @@ namespace SCRSHA001{
 
             std::string compressStringWithHuffman(std::string toEncode);
 
-            void extractCompressedTextOut(const std::string &compressedString) const;
-
-            void createCodeTableFile(std::unordered_map<char, int> &letterFrequencyTable, const std::string &codeTableName) const;
     };
 
 

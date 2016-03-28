@@ -7,6 +7,7 @@
 #include "HuffmanUnitTests.h"
 #include "../HuffmanTree.h"
 #include "../HuffmanNode.h"
+#include "../HuffmanUtils.h"
 #include <unordered_map>
 #include <queue>
 #include <memory>
@@ -17,10 +18,11 @@ using namespace SCRSHA001;
 TEST_CASE("Huffman tree building and destroying","[HuffmanTree]"){
 
     HuffmanTree huffmanTree = HuffmanTree();
+    HuffmanUtils huffmanUtils = HuffmanUtils();
 
     SECTION("Testing letter frequency table"){
         string textFileTestCase = "Hello Worldzies hit the hammer heavy xxxxxxx";
-        unordered_map<char,int> letterFrequencyMap = huffmanTree.createLetterFrequencyTable(textFileTestCase);
+        unordered_map<char,int> letterFrequencyMap = huffmanUtils.createLetterFrequencyTable(textFileTestCase);
 
         REQUIRE( int(letterFrequencyMap.at('H')) == 1);
         REQUIRE( int(letterFrequencyMap.at('h')) == 4);
@@ -109,14 +111,13 @@ TEST_CASE("Huffman tree building and destroying","[HuffmanTree]"){
             string compressedString = huffmanTree.compressStringWithHuffman("qxhyxxxhy"); //only letters from prev test
             REQUIRE(compressedString == "0101100110110101011001101");
 
-            SECTION("Test writing the compressed string to an outfile"){
-                huffmanTree.extractCompressedTextOut(compressedString);
-            }
         }
 
     }
     SECTION("Test the whole Huffman tree creation - start to finish"){
-        HuffmanTree *hf = new HuffmanTree("huffhuman");
+        string wholeFile = huffmanUtils.readStringFromFile("TestDoc.txt");
+        cout<<wholeFile<<endl;
+        HuffmanTree *hf = new HuffmanTree(wholeFile);
     }
 
 

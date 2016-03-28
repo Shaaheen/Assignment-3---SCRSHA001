@@ -4,8 +4,10 @@
 
 #include <queue>
 #include <fstream>
+#include <bitset>
 #include "HuffmanTree.h"
 #include "catch.hpp"
+#include "HuffmanUtils.h"
 
 using namespace std;
 
@@ -16,8 +18,8 @@ namespace SCRSHA001{
     HuffmanTree::~HuffmanTree() { }
 
     HuffmanTree::HuffmanTree(std::string toEncode) {
-
-        unordered_map<char,int> letterFrequencyTable = createLetterFrequencyTable(toEncode); //Get frequency table
+        HuffmanUtils huffmanUtils = HuffmanUtils();
+        unordered_map<char,int> letterFrequencyTable = huffmanUtils.createLetterFrequencyTable(toEncode); //Get frequency table
 
         //Priority queue prioritising the smallest frequency nodes first
         priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>,HuffmanComparator> priorityQueueOfNodes;
@@ -32,31 +34,43 @@ namespace SCRSHA001{
 
         string compressedString = compressStringWithHuffman(toEncode);
 
-        extractCompressedTextOut(compressedString);
+        huffmanUtils.extractCompressedTextOut(compressedString);
         string codeTableName = "CodeTable.txt";
-        createCodeTableFile(letterFrequencyTable, codeTableName);
+        huffmanUtils.createCodeTableFile(letterFrequencyTable, codeTableName,codeTable);
 
-
-    }
-
-    //Function to create a file with the code table informaion stored in it
-    void HuffmanTree::createCodeTableFile(unordered_map<char, int> &letterFrequencyTable, const string &codeTableName) const {
-        ofstream codeTableFile;
-        codeTableFile.open(codeTableName);
-        codeTableFile <<letterFrequencyTable.size() <<endl;
-        //Loop through letters found and print the corresponding code table value
-        for (unordered_map<char,int>::iterator iterator = letterFrequencyTable.begin(); iterator != letterFrequencyTable.end(); ++iterator) {
-            codeTableFile << iterator -> first << " " << codeTable.at(iterator->first) << endl;
+        ofstream stream("outfileForBitstream.bin", std::ios::binary);
+        //bitset<8> bitstream (compressedString);
+        //cout<<bitstream<<endl;
+        cout<<compressedString.size()<<endl;
+        cout<<(compressedString.size()/8) +1 <<endl;
+        int getBitsFrom = 0;
+        for (size_t i=0, n=(compressedString.size()/8)+1; i<n; ++i) {
+            bitset<8> bitstream (compressedString.substr(getBitsFrom,getBitsFrom+8));
+            //cout<<"loopty loop"<<endl;
+            uint8_t byte=0;
+            for (size_t j=0; j<8; ++j){
+                byte = (byte << 1) | bitstream[i*8 + j];
+//                if (bitstream[j] ==1){
+//                    byte |= 1;
+//                }
+//                byte<<=1;
+            }
+                //byte = (byte << 1) | bitstream[i*8 + j];
+            //cout<<byte<<endl;
+            stream.write((const char *) &byte, sizeof(byte));
+            getBitsFrom = getBitsFrom + 8;
         }
-        codeTableFile.close();
-    }
+        stream.close();
 
-    //Function to write out the compressed string with associated code table values
-    void HuffmanTree::extractCompressedTextOut(const string &compressedString) const {
-        char * bytesFromCompressed = (char *) compressedString.c_str();
-        ofstream file("outfile.bin", std::ios::binary);
-        file.write(bytesFromCompressed,100);
-        file.close();
+        ifstream f("outfileForBitstream.bin", ios::binary | ios::in);
+        char c;
+        while (f.get(c))
+        {
+            for (int i = 7; i >= 0; i--) // or (int i = 0; i < 8; i++)  if you want reverse bit order in bytes
+                cout << ((c >> i) & 1);
+        }
+
+
     }
 
     //Traverses tree and adds appropriate bitstring character
@@ -93,26 +107,6 @@ namespace SCRSHA001{
         }
 
         return newParentNode; //return the last edited node - root node
-    }
-
-    unordered_map<char, int> HuffmanTree::createLetterFrequencyTable(const string &toEncode) const {
-
-        char * lettersInTextFile = (char *) toEncode.c_str(); //Separate string into char array
-        unordered_map<char,int> lettersFound;// = unordered_map<char,int>();
-
-        //Iterate through letters in file
-        for (int i = 0; i < toEncode.length(); ++i) {
-            //const _Hashtable<char,int>::key_type currentLetter = lettersInTextFile[i]; //Get the ith letter
-            const unordered_map<char,int>::iterator got = lettersFound.find(lettersInTextFile[i]); //Check if already in map
-            if (got  != lettersFound.end()){ //Found Letter
-                got->second = got->second + 1; //add one to frequency since another occurence found
-            }
-            else{
-                lettersFound.insert({lettersInTextFile[i],1}); //insert into table the new letter
-            }
-        }
-
-        return lettersFound; //return the finished freq table
     }
 
     //Function to return the bitstring code for a specified letter
