@@ -2,11 +2,11 @@
 // Created by Shaaheen on 3/28/2016.
 //
 #define CATCH_CONFIG_MAIN
-#include "catch.hpp"
+#include "../catch.hpp"
 
 #include "HuffmanUnitTests.h"
-#include "HuffmanTree.h"
-#include "HuffmanNode.h"
+#include "../HuffmanTree.h"
+#include "../HuffmanNode.h"
 #include <unordered_map>
 #include <queue>
 #include <memory>
@@ -108,7 +108,16 @@ TEST_CASE("Huffman tree building and destroying","[HuffmanTree]"){
             huffmanTree.buildCodeTableFromTree(testRootNode,"");
             string compressedString = huffmanTree.compressStringWithHuffman("qxhyxxxhy"); //only letters from prev test
             REQUIRE(compressedString == "0101100110110101011001101");
+
+            SECTION("Test writing the compressed string to an outfile"){
+                huffmanTree.extractCompressedTextOut(compressedString);
+            }
         }
+
     }
+    SECTION("Test the whole Huffman tree creation - start to finish"){
+        HuffmanTree *hf = new HuffmanTree("huffhuman");
+    }
+
 
 }

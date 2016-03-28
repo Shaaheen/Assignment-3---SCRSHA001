@@ -40,6 +40,10 @@ namespace SCRSHA001{
             std::string getCodeForLetter(char letter);
 
             std::string compressStringWithHuffman(std::string toEncode);
+
+            void extractCompressedTextOut(const std::string &compressedString) const;
+
+            void createCodeTableFile(std::unordered_map<char, int> &letterFrequencyTable, const std::string &codeTableName) const;
     };
 
 

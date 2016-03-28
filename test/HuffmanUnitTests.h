@@ -5,7 +5,7 @@
 #ifndef ASSIGNMENT_3_SCRSHA001_HUFFMANUNITTESTS_H
 #define ASSIGNMENT_3_SCRSHA001_HUFFMANUNITTESTS_H
 
-#include "catch.hpp"
+#include "../catch.hpp"
 
 class HuffmanUnitTests {
 

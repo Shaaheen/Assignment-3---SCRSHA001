@@ -3,6 +3,7 @@
 //
 
 #include <queue>
+#include <fstream>
 #include "HuffmanTree.h"
 #include "catch.hpp"
 
@@ -30,9 +31,32 @@ namespace SCRSHA001{
         buildCodeTableFromTree(rootNode,""); //Sets the code table for tree
 
         string compressedString = compressStringWithHuffman(toEncode);
+
+        extractCompressedTextOut(compressedString);
+        string codeTableName = "CodeTable.txt";
+        createCodeTableFile(letterFrequencyTable, codeTableName);
+
+
+    }
+
+    //Function to create a file with the code table informaion stored in it
+    void HuffmanTree::createCodeTableFile(unordered_map<char, int> &letterFrequencyTable, const string &codeTableName) const {
+        ofstream codeTableFile;
+        codeTableFile.open(codeTableName);
+        codeTableFile <<letterFrequencyTable.size() <<endl;
+        //Loop through letters found and print the corresponding code table value
+        for (unordered_map<char,int>::iterator iterator = letterFrequencyTable.begin(); iterator != letterFrequencyTable.end(); ++iterator) {
+            codeTableFile << iterator -> first << " " << codeTable.at(iterator->first) << endl;
+        }
+        codeTableFile.close();
+    }
+
+    //Function to write out the compressed string with associated code table values
+    void HuffmanTree::extractCompressedTextOut(const string &compressedString) const {
         char * bytesFromCompressed = (char *) compressedString.c_str();
-
-
+        ofstream file("outfile.bin", std::ios::binary);
+        file.write(bytesFromCompressed,100);
+        file.close();
     }
 
     //Traverses tree and adds appropriate bitstring character
