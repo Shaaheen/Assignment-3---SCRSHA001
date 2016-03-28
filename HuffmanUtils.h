@@ -9,7 +9,6 @@
 namespace SCRSHA001{
     class HuffmanUtils {
         public:
-            void extractCompressedTextOut(const std::string &compressedString) const;
 
             std::unordered_map<char, int> createLetterFrequencyTable(const std::string &toEncode) const;
 
@@ -17,6 +16,8 @@ namespace SCRSHA001{
                                      const std::unordered_map<char, std::string> &codeTable) const;
 
             std::string readStringFromFile(std::string fileName);
+
+            void extractCompressedTextOut(const std::string &compressedString, const std::string &outName) const;
     };
 }
 

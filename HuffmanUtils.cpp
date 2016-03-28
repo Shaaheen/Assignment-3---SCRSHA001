@@ -21,9 +21,9 @@ namespace SCRSHA001{
     }
 
     //Function to write out the compressed string with associated code table values
-    void HuffmanUtils::extractCompressedTextOut(const string &compressedString) const {
+    void HuffmanUtils::extractCompressedTextOut(const string &compressedString,const string &outName) const {
         char * bytesFromCompressed = (char *) compressedString.c_str();
-        ofstream file("outfile.bin", std::ios::binary);
+        ofstream file(outName, std::ios::binary);
         file.write(bytesFromCompressed,compressedString.length());
         file.close();
     }

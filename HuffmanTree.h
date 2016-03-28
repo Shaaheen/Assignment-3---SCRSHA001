@@ -23,12 +23,12 @@ namespace SCRSHA001{
 
     class HuffmanTree {
         private:
-            std::shared_ptr<HuffmanNode> rootNode;
+        std::shared_ptr<HuffmanNode> rootNode;
             std::unordered_map<char,std::string> codeTable;
 
         public:
             HuffmanTree();
-            HuffmanTree(std::string toEncode);
+            HuffmanTree(std::string toEncode, std::string outFileName);
             ~HuffmanTree();
 
 

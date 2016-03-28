@@ -17,7 +17,7 @@ namespace SCRSHA001{
 
     HuffmanTree::~HuffmanTree() { }
 
-    HuffmanTree::HuffmanTree(std::string toEncode) {
+    HuffmanTree::HuffmanTree(string toEncode,string outFileName) {
         HuffmanUtils huffmanUtils = HuffmanUtils();
         unordered_map<char,int> letterFrequencyTable = huffmanUtils.createLetterFrequencyTable(toEncode); //Get frequency table
 
@@ -34,9 +34,10 @@ namespace SCRSHA001{
 
         string compressedString = compressStringWithHuffman(toEncode);
 
-        huffmanUtils.extractCompressedTextOut(compressedString);
+        huffmanUtils.extractCompressedTextOut(compressedString,outFileName);
         string codeTableName = "CodeTable.txt";
         huffmanUtils.createCodeTableFile(letterFrequencyTable, codeTableName,codeTable);
+
 
         ofstream stream("outfileForBitstream.bin", std::ios::binary);
         //bitset<8> bitstream (compressedString);
@@ -49,11 +50,12 @@ namespace SCRSHA001{
             //cout<<"loopty loop"<<endl;
             uint8_t byte=0;
             for (size_t j=0; j<8; ++j){
-                byte = (byte << 1) | bitstream[i*8 + j];
-//                if (bitstream[j] ==1){
-//                    byte |= 1;
-//                }
-//                byte<<=1;
+                //byte = (byte << 1) | bitstream[i*8 + j];
+                if (bitstream[j] ==1){
+                    byte |= 1;
+                    //cout<<"vh "<<endl;
+                }
+                byte<<=1;
             }
                 //byte = (byte << 1) | bitstream[i*8 + j];
             //cout<<byte<<endl;
@@ -69,7 +71,7 @@ namespace SCRSHA001{
             for (int i = 7; i >= 0; i--) // or (int i = 0; i < 8; i++)  if you want reverse bit order in bytes
                 cout << ((c >> i) & 1);
         }
-
+        f.close();
 
     }
 
