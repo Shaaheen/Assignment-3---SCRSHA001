@@ -8,8 +8,13 @@
 #include "HuffmanTree.h"
 #include "HuffmanNode.h"
 #include <unordered_map>
+#include <queue>
 
 using namespace std;
+
+bool compare(const SCRSHA001::HuffmanNode& a,const SCRSHA001::HuffmanNode & b){
+    return (a < b) ;
+}
 
 TEST_CASE("Huffman tree building and destroying","[HuffmanTree]"){
 
@@ -46,6 +51,11 @@ TEST_CASE("Huffman tree building and destroying","[HuffmanTree]"){
     }
 
     SECTION("Test priority queue of Huffman Nodes"){
+        priority_queue< SCRSHA001::HuffmanNode,vector<SCRSHA001::HuffmanNode>,function<bool(const SCRSHA001::HuffmanNode,const SCRSHA001::HuffmanNode)> > priorityQueueTest(compare);
+        priorityQueueTest.push(SCRSHA001::HuffmanNode('x',1));
+        priorityQueueTest.push(SCRSHA001::HuffmanNode('a',5));
+        SCRSHA001::HuffmanNode topOfQueue = priorityQueueTest.top();
+        REQUIRE( topOfQueue.getFrequencey() == 1);
 
     }
 

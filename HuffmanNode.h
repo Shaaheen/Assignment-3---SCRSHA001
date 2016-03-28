@@ -15,6 +15,8 @@ namespace SCRSHA001{
         int frequency;
     public:
         HuffmanNode(char lett,int freq);
+        bool operator<(const HuffmanNode &rhs)const;
+        int getFrequencey();
     };
 }
 

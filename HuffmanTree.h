@@ -6,7 +6,8 @@
 #define ASSIGNMENT_3_SCRSHA001_HUFFMANTREE_H
 
 
-#include <bits/shared_ptr.h>
+#include <memory>
+#include <unordered_map>
 #include "HuffmanNode.h"
 
 namespace SCRSHA001{
@@ -16,7 +17,11 @@ namespace SCRSHA001{
 
         public:
             HuffmanTree();
+            HuffmanTree(std::string toEncode);
             ~HuffmanTree();
+            std::unordered_map<char, int> createLetterFrequencyTable(const std::string &toEncode) const;
+            bool compare(const HuffmanNode& a,const HuffmanNode& b);
+
     };
 }
 
