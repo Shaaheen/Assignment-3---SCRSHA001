@@ -41,6 +41,7 @@ namespace SCRSHA001{
 
             std::string compressStringWithHuffman(std::string toEncode);
 
+        void extractUsingBitstream(std::string &compressedString) const;
     };
 
 

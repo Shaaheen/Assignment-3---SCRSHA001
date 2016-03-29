@@ -39,40 +39,53 @@ namespace SCRSHA001{
         huffmanUtils.createCodeTableFile(letterFrequencyTable, codeTableName,codeTable);
 
 
-        ofstream stream("outfileForBitstream.bin", std::ios::binary);
-        //bitset<8> bitstream (compressedString);
-        //cout<<bitstream<<endl;
+        extractUsingBitstream(compressedString);
+
+    }
+
+    /*
+     * Function to take in a string representation of bits and join the bits together to a byte
+     * Store those bytes in a buffer and then write buffer to binary outfile
+    */
+    void HuffmanTree::extractUsingBitstream(string &compressedString) const {
+        ofstream stream("outfileFromBitstream.bin", ios_base::binary);
         cout<<compressedString.size()<<endl;
         cout<<(compressedString.size()/8) +1 <<endl;
-        int getBitsFrom = 0;
-        for (size_t i=0, n=(compressedString.size()/8)+1; i<n; ++i) {
-            bitset<8> bitstream (compressedString.substr(getBitsFrom,getBitsFrom+8));
-            //cout<<"loopty loop"<<endl;
+        cout<<compressedString.substr(0,8)<<endl;
+        char* buffer;
+        int numberOfBits = compressedString.size();
+        int numberOfBytesCreated = (numberOfBits/8) + (numberOfBits%8 ? 1:0); //Formula from assignment brief
+
+        unsigned int getBitsFrom = 0;
+        for (int i=0;  i < numberOfBytesCreated; ++i) {
+            if ((getBitsFrom+8) >compressedString.size()){ //If last byte needs more bits from compressedString then fill with 0's
+                int diff = (getBitsFrom+8) - compressedString.size();
+                for (int j = 0; j < diff; ++j) {
+                    compressedString = compressedString + "0"; //Add 0's that will be discarded just to make a whole byte now
+                }
+            }
+            bitset<8> bitstream (compressedString.substr(getBitsFrom,getBitsFrom+8)); //Get bitstream from string representation
             uint8_t byte=0;
             for (size_t j=0; j<8; ++j){
                 //byte = (byte << 1) | bitstream[i*8 + j];
-                if (bitstream[j] ==1){
-                    byte |= 1;
-                    //cout<<"vh "<<endl;
-                }
-                byte<<=1;
+
+//                if (bitstream[j] ==1){
+//                    byte |= 1;
+//                    //cout<<"vh "<<endl;
+//                }
+//                byte<<=1;
+
             }
-                //byte = (byte << 1) | bitstream[i*8 + j];
-            //cout<<byte<<endl;
-            stream.write((const char *) &byte, sizeof(byte));
+            buffer[i] = (char) bitstream.to_ulong(); //Get char value(byte value) of bitstream to represent bits as a byte together
+            //char byteA = (char) bitstream.to_ulong();
+
             getBitsFrom = getBitsFrom + 8;
         }
+
+        stream.write((const char *) numberOfBits, sizeof(int)); //Prints number of bits in file in header
+        stream.write((const char *) '\n',sizeof(int)); //New line
+        stream.write(buffer, numberOfBytesCreated); //Print the stored bytes to the file
         stream.close();
-
-        ifstream f("outfileForBitstream.bin", ios::binary | ios::in);
-        char c;
-        while (f.get(c))
-        {
-            for (int i = 7; i >= 0; i--) // or (int i = 0; i < 8; i++)  if you want reverse bit order in bytes
-                cout << ((c >> i) & 1);
-        }
-        f.close();
-
     }
 
     //Traverses tree and adds appropriate bitstring character

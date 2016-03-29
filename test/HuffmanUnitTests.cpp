@@ -116,8 +116,21 @@ TEST_CASE("Huffman tree building and destroying","[HuffmanTree]"){
     }
     SECTION("Test the whole Huffman tree creation - start to finish"){
         string wholeFile = huffmanUtils.readStringFromFile("TestDoc.txt");
-        cout<<wholeFile<<endl;
-        HuffmanTree *hf = new HuffmanTree(wholeFile);
+        HuffmanTree hf =  HuffmanTree(wholeFile,"outfile.bin");
+
+    }
+    SECTION("Test the bitstream creation and output to file of the bitstream"){
+
+
+        ifstream f("outfileFromBitstream.bin", ios::binary | ios::in);
+        char c;
+        while (f.get(c))
+        {
+            for (int i = 7; i >= 0; i--) // or (int i = 0; i < 8; i++)  if you want reverse bit order in bytes
+                cout << ((c >> i) & 1);
+            break;
+        }
+        f.close();
     }
 
 
