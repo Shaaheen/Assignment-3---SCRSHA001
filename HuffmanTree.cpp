@@ -5,6 +5,7 @@
 #include <queue>
 #include <fstream>
 #include <bitset>
+#include <unordered_map>
 #include "HuffmanTree.h"
 #include "catch.hpp"
 #include "HuffmanUtils.h"
@@ -19,7 +20,7 @@ namespace SCRSHA001{
 
     HuffmanTree::HuffmanTree(string toEncode,string outFileName) {
         HuffmanUtils huffmanUtils = HuffmanUtils();
-        unordered_map<char,int> letterFrequencyTable = huffmanUtils.createLetterFrequencyTable(toEncode); //Get frequency table
+        this->letterFrequencyTable = huffmanUtils.createLetterFrequencyTable(toEncode); //Get frequency table
 
         //Priority queue prioritising the smallest frequency nodes first
         priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>,HuffmanComparator> priorityQueueOfNodes;
@@ -35,57 +36,56 @@ namespace SCRSHA001{
         string compressedString = compressStringWithHuffman(toEncode);
 
         huffmanUtils.extractCompressedTextOut(compressedString,outFileName);
-        string codeTableName = "CodeTable.txt";
-        huffmanUtils.createCodeTableFile(letterFrequencyTable, codeTableName,codeTable);
+        string codeTableName = outFileName + "CodeTable.txt";
+        huffmanUtils.createCodeTableFile(letterFrequencyTable, codeTableName,charToCodeTable);
 
 
-        extractUsingBitstream(compressedString);
+        int sizeOfEncodedFile = huffmanUtils.extractUsingBitstream(compressedString,outFileName);
+        int sizeOfOriginal = toEncode.length() * sizeof(char);
+        double percentageReduction = ((sizeOfOriginal+0.0-sizeOfEncodedFile+0.0)/sizeOfOriginal+0.0)*100.0;
+        cout<<"File size of huffman encoded file Bitstream"<<outFileName<<" in bytes: "<<sizeOfEncodedFile<<endl;
+        cout<<"File size of original file in bytes: "<<sizeOfOriginal<<endl;
+        cout<<"File reduced in size by "<<percentageReduction<<"%"<<endl;
+        cout<<endl;
 
+        //readInUsingBitstream(outFileName,letterFrequencyTable,charToCodeTable);
     }
 
-    /*
-     * Function to take in a string representation of bits and join the bits together to a byte
-     * Store those bytes in a buffer and then write buffer to binary outfile
-    */
-    void HuffmanTree::extractUsingBitstream(string &compressedString) const {
-        ofstream stream("outfileFromBitstream.bin", ios_base::binary);
-        cout<<compressedString.size()<<endl;
-        cout<<(compressedString.size()/8) +1 <<endl;
-        cout<<compressedString.substr(0,8)<<endl;
-        char* buffer;
-        int numberOfBits = compressedString.size();
-        int numberOfBytesCreated = (numberOfBits/8) + (numberOfBits%8 ? 1:0); //Formula from assignment brief
+    string HuffmanTree::readInUsingBitstream(const string &fileNameOfBitStream){
 
-        unsigned int getBitsFrom = 0;
-        for (int i=0;  i < numberOfBytesCreated; ++i) {
-            if ((getBitsFrom+8) >compressedString.size()){ //If last byte needs more bits from compressedString then fill with 0's
-                int diff = (getBitsFrom+8) - compressedString.size();
-                for (int j = 0; j < diff; ++j) {
-                    compressedString = compressedString + "0"; //Add 0's that will be discarded just to make a whole byte now
+        HuffmanUtils huffmanUtils = HuffmanUtils();
+        unordered_map<string,char> codeToCharTable = huffmanUtils.createCodeToCharTable(letterFrequencyTable,charToCodeTable);
+
+        //string representation the huffman tree created before
+        ifstream f("Bitstream" + fileNameOfBitStream, ios::binary | ios::in);
+        int numOfBitsInFile = 0;
+        char newline;
+        f.read((char*)&numOfBitsInFile, sizeof(numOfBitsInFile));
+        f.read((char*)&newline, sizeof(newline)); //Extracts new line character
+        char c;
+        int bitsRetrieved = 0; //Counts all the bits retrieved so to know when to stop reading
+        string concat = ""; //Will keep adding bits until found a match in the code table
+        string outputResult = "";  //Full result of added up chars
+
+        while (f.get(c) )
+        {
+            for (int i = 7; i >= 0; i--){
+                int bit = ((c >> i) & 1);
+                if (bitsRetrieved < numOfBitsInFile){ //Stop reading if reached bits received
+                    concat = concat + to_string(bit); //Add bits to going string
+                    bitsRetrieved++;
+                }
+                //Tries to find char value for current bitstream
+                unordered_map<std::string,char>::iterator got = codeToCharTable.find (concat);
+                if (got != codeToCharTable.end()){ //if found
+                    outputResult = outputResult + got->second; //Add char to result
+                    concat=""; //reset bit string
                 }
             }
-            bitset<8> bitstream (compressedString.substr(getBitsFrom,getBitsFrom+8)); //Get bitstream from string representation
-            uint8_t byte=0;
-            for (size_t j=0; j<8; ++j){
-                //byte = (byte << 1) | bitstream[i*8 + j];
 
-//                if (bitstream[j] ==1){
-//                    byte |= 1;
-//                    //cout<<"vh "<<endl;
-//                }
-//                byte<<=1;
-
-            }
-            buffer[i] = (char) bitstream.to_ulong(); //Get char value(byte value) of bitstream to represent bits as a byte together
-            //char byteA = (char) bitstream.to_ulong();
-
-            getBitsFrom = getBitsFrom + 8;
         }
-
-        stream.write((const char *) numberOfBits, sizeof(int)); //Prints number of bits in file in header
-        stream.write((const char *) '\n',sizeof(int)); //New line
-        stream.write(buffer, numberOfBytesCreated); //Print the stored bytes to the file
-        stream.close();
+        f.close();
+        return outputResult;
     }
 
     //Traverses tree and adds appropriate bitstring character
@@ -93,7 +93,7 @@ namespace SCRSHA001{
         if (rootNode->left != nullptr){
             buildCodeTableFromTree(rootNode->left,bitString + "0"); //If traverse left - add 0 to bitstring
         }
-        this->codeTable.insert({(*rootNode).getLetter(),bitString}); //Set the code table with bitstring and associated letter
+        this->charToCodeTable.insert({(*rootNode).getLetter(),bitString}); //Set the code table with bitstring and associated letter
         if (rootNode->right != nullptr){
             buildCodeTableFromTree(rootNode->right,bitString + "1"); //If traverse right - add 1 to bitstring
         }
@@ -115,7 +115,7 @@ namespace SCRSHA001{
             //Frequency of parent is the summation of the frequency of its children
             int parentFrequency = (*leftOfNewParent).getFrequency() + (*rightOfNewParent).getFrequency();
 
-            newParentNode.reset(new HuffmanNode('_',parentFrequency)); //Empty char and summed frequency
+            newParentNode.reset(new HuffmanNode('\0',parentFrequency)); //Empty char and summed frequency
             newParentNode->left = leftOfNewParent; //Set pointers from parent to the children nodes so they don't get lost(out of scope)
             newParentNode->right = rightOfNewParent;
             priorityQueue.push(newParentNode); //Push new parent node onto priority queue to be possibly merged again
@@ -126,7 +126,7 @@ namespace SCRSHA001{
 
     //Function to return the bitstring code for a specified letter
     std::string HuffmanTree::getCodeForLetter(char letter) {
-        return codeTable.at(letter);
+        return charToCodeTable.at(letter);
     }
 
     //Function to use the code table to match up the letters in a string and change them to the code table equivalent
@@ -134,7 +134,7 @@ namespace SCRSHA001{
         char * lettersInTextFile = (char *) toEncode.c_str(); //Split into letter array
         string compressedString = "";
         for (int i = 0; i < toEncode.length(); ++i) {
-            compressedString = compressedString + codeTable.at(lettersInTextFile[i]); //Add code value of that letter
+            compressedString = compressedString + charToCodeTable.at(lettersInTextFile[i]); //Add code value of that letter
         }
         return compressedString; //return full coded string
     }

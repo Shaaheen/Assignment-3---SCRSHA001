@@ -18,6 +18,11 @@ namespace SCRSHA001{
             std::string readStringFromFile(std::string fileName);
 
             void extractCompressedTextOut(const std::string &compressedString, const std::string &outName) const;
+
+            std::unordered_map<std::string, char> createCodeToCharTable(std::unordered_map<char, int> &letterFrequencyTable,
+                                                                const std::unordered_map<char, std::string> &codeTable) const;
+
+            int extractUsingBitstream(std::string &compressedString, const std::string &outFileName) const;
     };
 }
 

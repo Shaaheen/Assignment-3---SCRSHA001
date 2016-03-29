@@ -24,7 +24,8 @@ namespace SCRSHA001{
     class HuffmanTree {
         private:
         std::shared_ptr<HuffmanNode> rootNode;
-            std::unordered_map<char,std::string> codeTable;
+        std::unordered_map<char,std::string> charToCodeTable; //For writing
+        std::unordered_map<char, int> letterFrequencyTable;
 
         public:
             HuffmanTree();
@@ -41,7 +42,7 @@ namespace SCRSHA001{
 
             std::string compressStringWithHuffman(std::string toEncode);
 
-        void extractUsingBitstream(std::string &compressedString) const;
+            std::string readInUsingBitstream(const std::string &fileNameOfBitStream);
     };
 
 
