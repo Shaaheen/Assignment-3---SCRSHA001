@@ -96,6 +96,8 @@ namespace SCRSHA001{
 
             }
             bitset<8> bitstream (compressedString.substr(getBitsFrom,getBitsFrom+8)); //Get bitstream from string representation
+            //bit string -> bit set -> long value -> char
+            //"10101111" -> {1,0,1,0,1,1,1,1} -> long representation -> char representation
             char byteA = (char) bitstream.to_ulong();//Get char value(byte value) of bitstream to represent bits as a byte together
             stream.write((const char *) &byteA, 1); //Write that byte straight to file
             getBitsFrom = getBitsFrom + 8;

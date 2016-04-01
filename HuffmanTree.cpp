@@ -18,6 +18,39 @@ namespace SCRSHA001{
 
     HuffmanTree::~HuffmanTree() { }
 
+    //Copy constructor
+    HuffmanTree::HuffmanTree(const HuffmanTree & rhs) : rootNode(new HuffmanNode(*rhs.rootNode)) {
+        this->letterFrequencyTable = rhs.letterFrequencyTable;
+        this->charToCodeTable = rhs.charToCodeTable;
+    }
+
+    //Copy assignment operator
+    HuffmanTree &HuffmanTree::operator=(const HuffmanTree &rhs) {
+        this->letterFrequencyTable = rhs.letterFrequencyTable;
+        this->charToCodeTable = rhs.charToCodeTable;
+        rootNode.operator=(rhs.rootNode);
+        return *this;
+    }
+
+    //Move constructor
+    HuffmanTree::HuffmanTree(HuffmanTree &&rhs): rootNode(new HuffmanNode(*rhs.rootNode)) {
+        this->letterFrequencyTable = move(rhs.letterFrequencyTable);
+        this->charToCodeTable = move(rhs.charToCodeTable);
+        delete rhs.rootNode;
+        rhs.charToCodeTable.clear();
+        rhs.letterFrequencyTable.clear();
+    }
+
+    //Move assignment operator
+    HuffmanTree & operator=(HuffmanTree && rhs) {
+        this->rootNode = move(rhs.rootNode);
+        this->letterFrequencyTable = move(rhs.letterFrequencyTable);
+        this->charToCodeTable = move(rhs.charToCodeTable);
+        return *this;
+    }
+
+
+
     HuffmanTree::HuffmanTree(string toEncode,string outFileName) {
         HuffmanUtils huffmanUtils = HuffmanUtils();
         this->letterFrequencyTable = huffmanUtils.createLetterFrequencyTable(toEncode); //Get frequency table
@@ -138,4 +171,7 @@ namespace SCRSHA001{
         }
         return compressedString; //return full coded string
     }
+
+
+
 }

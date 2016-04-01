@@ -28,9 +28,14 @@ namespace SCRSHA001{
         std::unordered_map<char, int> letterFrequencyTable;
 
         public:
+
             HuffmanTree();
             HuffmanTree(std::string toEncode, std::string outFileName);
             ~HuffmanTree();
+            HuffmanTree(const HuffmanTree & rhs);
+            HuffmanTree(HuffmanTree && rhs);
+
+            HuffmanTree & operator=(const HuffmanTree & rhs);
 
 
             std::shared_ptr<HuffmanNode> buildTree(
