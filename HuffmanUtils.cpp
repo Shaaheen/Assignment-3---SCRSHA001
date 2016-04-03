@@ -8,7 +8,6 @@
 #include <bitset>
 #include <iostream>
 #include "HuffmanUtils.h"
-#include "HuffmanTree.h"
 
 using namespace std;
 
