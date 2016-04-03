@@ -5,8 +5,10 @@
 #include "HuffmanNode.h"
 
 namespace SCRSHA001{
+    //Default constructor
     HuffmanNode::HuffmanNode() { }
 
+    //Destructor constructor
     HuffmanNode::~HuffmanNode() { }
 
     //Copy constructor
@@ -33,7 +35,7 @@ namespace SCRSHA001{
     }
 
     //Move assignment operator
-    HuffmanNode & operator=(HuffmanNode && rhs) {
+    HuffmanNode &HuffmanNode::operator=(const HuffmanNode &&rhs) {
         this->left = std::move(rhs.left);
         this->right = std::move(rhs.right);
         this->letter = std::move(rhs.letter);
@@ -41,15 +43,17 @@ namespace SCRSHA001{
         return *this;
     }
 
+    //constructor to build a node
     HuffmanNode::HuffmanNode(char lett, int freq) {
         this->letter = lett;
         this->frequency = freq;
     }
 
+    //Function to hancle to "<" operation
     bool HuffmanNode::operator<(const HuffmanNode &rhs)const {
         return (this->frequency < rhs.getFrequency());
     }
-
+    
     int HuffmanNode::getFrequency() const{
         return frequency;
     }
@@ -57,6 +61,5 @@ namespace SCRSHA001{
     char HuffmanNode::getLetter() const {
         return letter;
     }
-
 
 }

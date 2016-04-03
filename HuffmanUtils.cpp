@@ -14,6 +14,7 @@ using namespace std;
 
 namespace SCRSHA001{
 
+    //Get all text from a file
     string HuffmanUtils::readStringFromFile(string fileName){
         ifstream t(fileName);
         string toEncodeFileText((istreambuf_iterator<char>(t)),

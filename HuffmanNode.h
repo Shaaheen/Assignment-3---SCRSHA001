@@ -15,16 +15,21 @@ namespace SCRSHA001{
         char letter;
         int frequency;
     public:
+        //Points to children nodes
         std::shared_ptr<HuffmanNode> left = nullptr;
         std::shared_ptr<HuffmanNode> right = nullptr;
 
+        //Constructor
         HuffmanNode();
         HuffmanNode(char lett,int freq);
         ~HuffmanNode();
         HuffmanNode(const HuffmanNode & rhs);
         HuffmanNode(HuffmanNode && rhs);
 
+        //For equals operator constructor
         HuffmanNode & operator=(const HuffmanNode & rhs);
+        //For equals operator constructor
+        HuffmanNode & operator=(const HuffmanNode && rhs);
 
         bool operator<(const HuffmanNode &rhs)const;
         int getFrequency() const;

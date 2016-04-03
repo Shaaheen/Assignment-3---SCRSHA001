@@ -14,8 +14,10 @@ using namespace std;
 
 namespace SCRSHA001{
 
+    //Default constructor
     HuffmanTree::HuffmanTree() { }
 
+    //Destructor constructor
     HuffmanTree::~HuffmanTree() { }
 
     //Copy constructor
@@ -36,21 +38,27 @@ namespace SCRSHA001{
     HuffmanTree::HuffmanTree(HuffmanTree &&rhs): rootNode(new HuffmanNode(*rhs.rootNode)) {
         this->letterFrequencyTable = move(rhs.letterFrequencyTable);
         this->charToCodeTable = move(rhs.charToCodeTable);
-        delete rhs.rootNode;
+        rhs.rootNode.reset();
         rhs.charToCodeTable.clear();
         rhs.letterFrequencyTable.clear();
     }
 
-    //Move assignment operator
-    HuffmanTree & operator=(HuffmanTree && rhs) {
+    HuffmanTree &HuffmanTree::operator=(const HuffmanTree &&rhs) {
         this->rootNode = move(rhs.rootNode);
         this->letterFrequencyTable = move(rhs.letterFrequencyTable);
         this->charToCodeTable = move(rhs.charToCodeTable);
         return *this;
     }
 
+//    //Move assignment operator
+//    HuffmanTree & operator=(const HuffmanTree && rhs) {
+//        this->rootNode = move(rhs.rootNode);
+//        this->letterFrequencyTable = move(rhs.letterFrequencyTable);
+//        this->charToCodeTable = move(rhs.charToCodeTable);
+//        return *this;
+//    }
 
-
+    //Function to build huffman tree based on encoding
     HuffmanTree::HuffmanTree(string toEncode,string outFileName) {
         HuffmanUtils huffmanUtils = HuffmanUtils();
         this->letterFrequencyTable = huffmanUtils.createLetterFrequencyTable(toEncode); //Get frequency table
@@ -66,16 +74,18 @@ namespace SCRSHA001{
         this->rootNode = buildTree(priorityQueueOfNodes); //Set root node to root of built Huffman Tree
         buildCodeTableFromTree(rootNode,""); //Sets the code table for tree
 
-        string compressedString = compressStringWithHuffman(toEncode);
+        string compressedString = compressStringWithHuffman(toEncode); //Get encoded string
 
-        huffmanUtils.extractCompressedTextOut(compressedString,outFileName);
-        string codeTableName = outFileName + "CodeTable.txt";
+        huffmanUtils.extractCompressedTextOut(compressedString,outFileName); //write the encoded string out to a file
+        string codeTableName = outFileName + "CodeTable.txt"; //Create and write out the specific code table out to a file
         huffmanUtils.createCodeTableFile(letterFrequencyTable, codeTableName,charToCodeTable);
 
 
+        //Calculate the amount of space saved and print to screen
         int sizeOfEncodedFile = huffmanUtils.extractUsingBitstream(compressedString,outFileName);
         int sizeOfOriginal = toEncode.length() * sizeof(char);
         double percentageReduction = ((sizeOfOriginal+0.0-sizeOfEncodedFile+0.0)/sizeOfOriginal+0.0)*100.0;
+        cout<<"Out file: "<<outFileName<<" and bit packed out file: Bitstream"<<outFileName<<" and Code table file: "<<outFileName<<"CodeTable.txt"<<endl;
         cout<<"File size of huffman encoded file Bitstream"<<outFileName<<" in bytes: "<<sizeOfEncodedFile<<endl;
         cout<<"File size of original file in bytes: "<<sizeOfOriginal<<endl;
         cout<<"File reduced in size by "<<percentageReduction<<"%"<<endl;
@@ -84,6 +94,7 @@ namespace SCRSHA001{
         //readInUsingBitstream(outFileName,letterFrequencyTable,charToCodeTable);
     }
 
+    //Function to read encoded string using already built tree
     string HuffmanTree::readInUsingBitstream(const string &fileNameOfBitStream){
 
         HuffmanUtils huffmanUtils = HuffmanUtils();
@@ -133,6 +144,7 @@ namespace SCRSHA001{
     }
 
 
+    //Function builds huffman tree and returns the root node
     shared_ptr<HuffmanNode> HuffmanTree::buildTree(priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>,HuffmanComparator> &priorityQueue)
     {
         shared_ptr<HuffmanNode> newParentNode = nullptr;
@@ -171,7 +183,5 @@ namespace SCRSHA001{
         }
         return compressedString; //return full coded string
     }
-
-
 
 }

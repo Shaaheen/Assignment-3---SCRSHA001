@@ -28,7 +28,7 @@ namespace SCRSHA001{
         std::unordered_map<char, int> letterFrequencyTable;
 
         public:
-
+            //Constructors
             HuffmanTree();
             HuffmanTree(std::string toEncode, std::string outFileName);
             ~HuffmanTree();
@@ -36,18 +36,20 @@ namespace SCRSHA001{
             HuffmanTree(HuffmanTree && rhs);
 
             HuffmanTree & operator=(const HuffmanTree & rhs);
+            HuffmanTree & operator=(const HuffmanTree && rhs);
 
-
+            //Function to build tree
             std::shared_ptr<HuffmanNode> buildTree(
                 std::priority_queue<std::shared_ptr<HuffmanNode>, std::vector<std::shared_ptr<HuffmanNode>>, HuffmanComparator>& priorityQueue);
 
+            //Function to create code table from nodes
             void buildCodeTableFromTree(std::shared_ptr<HuffmanNode> rootNode,std::string bitString);
 
-            std::string getCodeForLetter(char letter);
+            std::string getCodeForLetter(char letter); //Gets the encoding for a specified letter
 
-            std::string compressStringWithHuffman(std::string toEncode);
+            std::string compressStringWithHuffman(std::string toEncode); //Encode a string
 
-            std::string readInUsingBitstream(const std::string &fileNameOfBitStream);
+            std::string readInUsingBitstream(const std::string &fileNameOfBitStream); //read a encoded string
     };
 
 
