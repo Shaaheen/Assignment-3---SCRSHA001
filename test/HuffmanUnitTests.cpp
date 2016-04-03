@@ -159,17 +159,17 @@ TEST_CASE("Huffman tree building and destroying - all methods","[HuffmanTree]"){
                 "\nfnjvf"
                 "sscsccc";
         string outputFileName = "ReadingInTest.bin";
-        HuffmanTree *readInTestTree = new HuffmanTree(testStringToEncode,outputFileName);
-        string resultFromStream = (*readInTestTree).readInUsingBitstream(outputFileName);
+        HuffmanTree readInTestTree = HuffmanTree(testStringToEncode,outputFileName);
+        string resultFromStream = (readInTestTree).readInUsingBitstream(outputFileName);
 
         REQUIRE(resultFromStream == testStringToEncode);
-        delete readInTestTree;
     }
     SECTION("Test the whole Huffman tree creation - start to finish"){
 
-        string wholeFile = huffmanUtils.readStringFromFile("TestDoc.txt");
-        HuffmanTree hf =  HuffmanTree(wholeFile,"outfile.bin");
-        string resultFromWholeFile = hf.readInUsingBitstream("outfile.bin");
+        cout<<"Large test loading..."<<endl;
+        string wholeFile = huffmanUtils.readStringFromFile("../TestDoc.txt");
+        HuffmanTree hf =  HuffmanTree(wholeFile,"Outfile.bin");
+        string resultFromWholeFile = hf.readInUsingBitstream("Outfile.bin");
 
         REQUIRE(resultFromWholeFile == wholeFile);
     }
@@ -178,7 +178,7 @@ TEST_CASE("Huffman tree building and destroying - all methods","[HuffmanTree]"){
 TEST_CASE("Tests with a large text file") {
     HuffmanTree huffmanTree = HuffmanTree();
     HuffmanUtils huffmanUtils = HuffmanUtils();
-    string largeFile = huffmanUtils.readStringFromFile("TestDoc3.txt");
+    string largeFile = huffmanUtils.readStringFromFile("../TestDoc3.txt");
 
     SECTION("Test the bitstream creation and output to file of the bitstream"){
         //Creates bitstream file automatically
@@ -212,8 +212,9 @@ TEST_CASE("Tests with a large text file") {
     }
 }
 TEST_CASE("Test 2 of the whole Huffman Tree "){
+    cout<<"Large test 2 loading..."<<endl;
     HuffmanUtils huffmanUtils = HuffmanUtils();
-    string wholeFile = huffmanUtils.readStringFromFile("TestDoc2.txt");
+    string wholeFile = huffmanUtils.readStringFromFile("../TestDoc2.txt");
     HuffmanTree hf =  HuffmanTree(wholeFile,"outfile.bin");
     string resultFromWholeFile = hf.readInUsingBitstream("outfile.bin");
 

@@ -9,8 +9,8 @@ EXE_NAME=huffTest
 #define a generic rule: to go from .cpp to .o files make should invoke the c++ compiler
 #the syntax tells make to invoke the compiler without linking (-c), outputting a .o file reading a .cpp file, additionally specifying flags
 
-$(EXE_NAME): main.o HuffmanTree.o  HuffmanUtils.o HuffmanNode.o
-	$(CPP) -o $(EXE_NAME) main.o HuffmanTree.o  HuffmanUtils.o HuffmanNode.o $(CPPFLAGS) 
+$(EXE_NAME): HuffmanTree.o  HuffmanUtils.o HuffmanNode.o HuffmanUnitTests.o
+	$(CPP) -o $(EXE_NAME) HuffmanTree.o  HuffmanUtils.o HuffmanNode.o HuffmanUnitTests.o $(CPPFLAGS) 
 
 HuffmanTree.o : ../HuffmanUtils.h ../HuffmanTree.h ../HuffmanTree.cpp
 	$(CPP) -c -o HuffmanTree.o ../HuffmanTree.cpp $(CPPFLAGS)
@@ -24,9 +24,7 @@ HuffmanUtils.o : ../HuffmanUtils.h ../HuffmanUtils.cpp
 HuffmanUnitTests.o : ../HuffmanNode.h ../HuffmanTree.h ../HuffmanUtils.h HuffmanUnitTests.h HuffmanUnitTests.cpp
 	$(CPP) -c -o HuffmanUnitTests.o HuffmanUnitTests.cpp $(CPPFLAGS)
 	
-main.o : ../HuffmanTree.h ../HuffmanUtils ../main.cpp
-	$(CPP) -c -o main.o ../main.cpp $(CPPFLAGS)
 
 #Never submit binaries to your git repo or vula, so create a rule for cleaning up the binary objects just leaving your source code behind
 clean:
-	@rm *.o huffTest
+	@rm *.o huffTest *.bin *CodeTable.txt

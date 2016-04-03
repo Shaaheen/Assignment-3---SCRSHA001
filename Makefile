@@ -21,9 +21,9 @@ HuffmanNode.o : HuffmanNode.h HuffmanNode.cpp
 HuffmanUtils.o : HuffmanUtils.h HuffmanUtils.cpp
 	$(CPP) -c -o HuffmanUtils.o HuffmanUtils.cpp $(CPPFLAGS)
 
-main.o : HuffmanTree.h HuffmanUtils main.cpp
+main.o : HuffmanTree.h HuffmanUtils.h main.cpp
 	$(CPP) -c -o main.o main.cpp $(CPPFLAGS)
 
 #Never submit binaries to your git repo or vula, so create a rule for cleaning up the binary objects just leaving your source code behind
 clean:
-	@rm *.o huffencode
+	@rm *.o huffencode *.bin *CodeTable.txt
